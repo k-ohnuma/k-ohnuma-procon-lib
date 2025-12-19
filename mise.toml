@@ -1,0 +1,19 @@
+[tools]
+"cargo:cargo-nextest" = "0.9.114"
+rust = "1.89.0"
+
+[tasks."format:check"]
+alias = "fmtc"
+run = "cargo fmt --all -- --check"
+
+[tasks.test]
+run = "cargo nextest run --nocapture"
+
+[tasks.ci]
+run = [
+  { tasks = [
+    "format:check",
+    "test",
+  ] },
+]
+

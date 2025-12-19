@@ -7,7 +7,7 @@ alias = "fmtc"
 run = "cargo fmt --all -- --check"
 
 [tasks.test]
-run = "cargo nextest run --nocapture"
+run = "cargo nextest run"
 
 [tasks.ci]
 run = [

@@ -140,7 +140,7 @@ mod tests {
         let mut rng = StdRng::seed_from_u64(42);
         for _ in 0..2000 {
             let n: u64 = rng.random_range(0..=60);
-            let k: u64 = rng.random_range(0..=80); 
+            let k: u64 = rng.random_range(0..=80);
             let got = nck(n, k);
             let exp = nck_ref_u64(n, k);
             assert_eq!(got, exp, "mismatch: n={n}, k={k}");
@@ -200,4 +200,3 @@ mod tests {
         }
     }
 }
-

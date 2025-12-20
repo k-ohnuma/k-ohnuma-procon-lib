@@ -1,0 +1,58 @@
+name: Publish to crates.io
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: rustup show
+        run: rustup show
+      - name: install components
+        run: rustup component add clippy rustfmt
+      - name: install nextest
+        uses: taiki-e/install-action@v2
+        with:
+          tool: nextest
+      - name: format check
+        run: cargo fmt --all -- --check
+      - name: test
+        run: cargo nextest run
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Detect version change
+        id: ver
+        shell: bash
+        run: |
+          set -euo pipefail
+          curr="$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')"
+          prev="$(git show HEAD~1:Cargo.toml 2>/dev/null | sed -n 's/^version *= *"\(.*\)"/\1/p' | head -n1 || true)"
+
+          echo "curr=$curr"
+          echo "prev=$prev"
+
+          echo "curr=$curr" >> "$GITHUB_OUTPUT"
+          echo "prev=$prev" >> "$GITHUB_OUTPUT"
+
+          if [[ -n "$prev" && "$curr" == "$prev" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish
+        if: steps.ver.outputs.changed == 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --locked

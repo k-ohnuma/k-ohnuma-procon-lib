@@ -1,0 +1,60 @@
+name: Release PR (version bump)
+
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        type: string
+        default: patch
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - uses: actions/checkout@v4
+      - name: install components
+        run: rustup component add clippy rustfmt
+
+      - name: install cargo-rele
+        uses: taiki-e/install-action@v2
+        with:
+          tool: release
+
+      - name: Configure git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Bump version, commit, open PR, enable auto-merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          LEVEL="${{ github.event.inputs.level }}"
+
+          cargo release version --execute --no-confirm "$LEVEL"
+          PKG_VER="$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[0].version')"
+
+          git checkout -b "release/${PKG_VER}"
+          cargo release commit --execute --no-confirm
+
+          git push -u origin HEAD
+
+          gh pr create --fill
+          gh pr merge --auto --delete-branch

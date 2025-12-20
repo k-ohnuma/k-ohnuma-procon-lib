@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "ac-lib"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "ac-library-rs",
  "num-traits",

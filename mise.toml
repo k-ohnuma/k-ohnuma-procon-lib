@@ -7,13 +7,14 @@ alias = "fmtc"
 run = "cargo fmt --all -- --check"
 
 [tasks.test]
-run = "cargo nextest run --nocapture"
+run = "cargo nextest run"
 
 [tasks.ci]
-run = [
-  { tasks = [
-    "format:check",
-    "test",
-  ] },
-]
+run = [{ tasks = ["format:check", "test"] }]
 
+[tasks.gitpush]
+depends = ["ci"]
+run = '''
+branch=$(git rev-parse --abbrev-ref HEAD)
+git push origin $branch
+'''

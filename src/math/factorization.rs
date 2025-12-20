@@ -30,7 +30,7 @@ pub fn factorization<T: PrimInt + FromPrimitive>(mut x: T) -> Vec<(T, usize)> {
 
 #[cfg(test)]
 mod tests {
-    use rand::{Rng, SeedableRng, rngs::StdRng};
+    use rand::{rngs::StdRng, Rng, SeedableRng};
 
     use crate::math::factorization::factorization;
 

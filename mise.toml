@@ -1,6 +1,6 @@
 [tools]
 "cargo:cargo-nextest" = "0.9.114"
-rust = "1.89.0"
+rust = "1.90"
 
 [tasks."format:check"]
 alias = "fmtc"

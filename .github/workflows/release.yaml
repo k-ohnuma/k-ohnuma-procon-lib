@@ -32,24 +32,25 @@ jobs:
       - name: install components
         run: rustup component add clippy rustfmt
 
-      - name: install cargo-rele
-        uses: taiki-e/install-action@v2
-        with:
-          tool: release
+      - name: Install cargo-release
+        run: cargo install cargo-release --locked
 
       - name: Configure git
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Bump version, commit, open PR, enable auto-merge
+      - name: Bump version
         shell: bash
         run: |
           set -euo pipefail
           LEVEL="${{ github.event.inputs.level }}"
 
+          echo $LEVEL
+
           cargo release version --execute --no-confirm "$LEVEL"
           PKG_VER="$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[0].version')"
+          echo $PKG_VER
 
           git checkout -b "release/${PKG_VER}"
           cargo release commit --execute --no-confirm

@@ -22,11 +22,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
 
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
       - uses: actions/checkout@v4
       - name: install components
         run: rustup component add clippy rustfmt
@@ -55,4 +50,4 @@ jobs:
           git push -u origin HEAD
 
           gh pr create --fill
-          gh pr merge --squash --delete-branch
+          # gh pr merge --squash --delete-branch

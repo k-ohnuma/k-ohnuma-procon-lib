@@ -445,7 +445,11 @@ mod tests {
     fn assert_frac_eq_i128(actual: Frac<i64>, expected: (i128, i128)) {
         let expected = norm_i128(expected.0, expected.1);
         let actual = frac_to_i128(actual);
-        assert_eq!(actual, expected, "actual={:?}, expected={:?}", actual, expected);
+        assert_eq!(
+            actual, expected,
+            "actual={:?}, expected={:?}",
+            actual, expected
+        );
     }
 
     fn rand_nonzero_i64(rng: &mut StdRng, lo: i64, hi: i64) -> i64 {
@@ -526,8 +530,8 @@ mod tests {
     #[test]
     fn inf_mul_sign() {
         let neg = Frac::new(-3_i64, 4);
-        assert!( (Frac::pinf() * neg).is_minf() );
-        assert!( (Frac::minf() * neg).is_pinf() );
+        assert!((Frac::pinf() * neg).is_minf());
+        assert!((Frac::minf() * neg).is_pinf());
     }
 
     #[test]
@@ -694,4 +698,3 @@ mod tests {
         }
     }
 }
-

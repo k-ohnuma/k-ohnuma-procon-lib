@@ -49,7 +49,7 @@ dependencies = [
 
 [[package]]
 name = "k-ohnuma-procon-lib"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "ac-library-rs",
  "itertools",

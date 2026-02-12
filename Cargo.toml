@@ -11,6 +11,7 @@ description = "library for atcoder (under development)"
 
 [dependencies]
 ac-library-rs = "0.2.0"
+itertools = "0.14.0"
 num-integer = "0.1.46"
 num-traits = "0.2.19"
 

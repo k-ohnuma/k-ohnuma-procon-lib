@@ -1,5 +1,5 @@
-pub mod transpose;
 pub mod chminmax;
 pub mod coordinate_compression;
-pub mod scanner;
 pub mod product_repeat;
+pub mod scanner;
+pub mod transpose;

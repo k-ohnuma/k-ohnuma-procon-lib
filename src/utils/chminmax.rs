@@ -18,4 +18,3 @@ pub trait ChMinMax: PartialOrd + Sized {
     }
 }
 impl<T: PartialOrd> ChMinMax for T {}
-

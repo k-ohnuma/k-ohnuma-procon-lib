@@ -1,5 +1,5 @@
-use std::collections::VecDeque;
 use itertools::Itertools;
+use std::collections::VecDeque;
 
 pub struct Rerooting<T, W, F, G, H>
 where
@@ -242,7 +242,9 @@ mod tests {
             while let Some(v) = stack.pop() {
                 let dv = dist[v];
                 for &(nx, w) in &g[v] {
-                    if dist[nx] != -1 { continue; }
+                    if dist[nx] != -1 {
+                        continue;
+                    }
                     dist[nx] = dv + w;
                     stack.push(nx);
                 }
@@ -296,7 +298,8 @@ mod tests {
             let n = rng.random_range(1..=30);
             let base = gen_tree(n, &mut rng);
 
-            let edges_w: Vec<(usize, usize, i64)> = base.iter().cloned().map(|(u, v)| (u, v, 1)).collect();
+            let edges_w: Vec<(usize, usize, i64)> =
+                base.iter().cloned().map(|(u, v)| (u, v, 1)).collect();
             let expected = brute_sum_dist(n, &edges_w);
 
             let identity = (0i64, 0i64);
@@ -310,14 +313,13 @@ mod tests {
 
             let mut rr2 = Rerooting::new_unweighted(
                 n,
-                edges_w.iter().map(|&(u,v,_)| (u,v)),
+                edges_w.iter().map(|&(u, v, _)| (u, v)),
                 0i64,
-                |a,b| a+b,
-                |acc,_v| acc+1,
+                |a, b| a + b,
+                |acc, _v| acc + 1,
             );
             let got = rr2.run(0);
             assert!(got.iter().all(|&x| x == n as i64));
         }
     }
 }
-

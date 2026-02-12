@@ -1,5 +1,5 @@
 [package]
-name = "ac-lib"
+name = "k-ohnuma-procon-lib"
 version = "0.1.3"
 edition = "2021"
 authors = ["k-ohnuma <ohnumaaa@gmail.com>"]

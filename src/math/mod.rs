@@ -4,3 +4,4 @@ pub mod extgcd;
 pub mod factorization;
 pub mod fraction;
 pub mod sqrt;
+pub mod is_prime_miller;

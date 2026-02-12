@@ -60,11 +60,12 @@ where
     where
         F: FnMut(T) -> bool,
     {
-        let n = self.acc.len();
+        let n = self.acc.len() - 1;
         assert!(l <= n);
         assert!(f(T::zero()), "f(0) must be true");
 
         if f(self.range_sum(l..n)) {
+            // r=n はOK（[l, n)）
             return n;
         }
 
@@ -92,7 +93,7 @@ where
     where
         F: FnMut(T) -> bool,
     {
-        let n = self.acc().len();
+        let n = self.acc.len() - 1;
         assert!(r <= n);
         assert!(f(T::zero()), "f(0) must be true");
 

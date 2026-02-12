@@ -4,8 +4,8 @@ version = "0.1.3"
 edition = "2021"
 authors = ["k-ohnuma <ohnumaaa@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/k-ohnuma/ac-lib"
-homepage = "https://github.com/k-ohnuma/ac-lib"
+repository = "https://github.com/k-ohnuma/k-ohnuma-procon-lib"
+homepage = "https://github.com/k-ohnuma/k-ohnuma-procon-lib"
 keywords = ["procon"]
 description = "library for atcoder (under development)"
 

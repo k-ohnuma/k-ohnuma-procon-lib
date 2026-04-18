@@ -20,14 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-
-      - uses: actions/checkout@v4
-      - name: install components
-        run: rustup component add clippy rustfmt
+      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
 
       - name: Install cargo-release
-        run: cargo install cargo-release --locked
+        run: nix develop -c cargo install cargo-release --locked
 
       - name: Configure git
         run: |
@@ -40,12 +37,12 @@ jobs:
           set -euo pipefail
           LEVEL="${{ github.event.inputs.level }}"
 
-          cargo release version --execute --no-confirm "$LEVEL"
-          PKG_VER="$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[0].version')"
+          nix develop -c cargo release version --execute --no-confirm "$LEVEL"
+          PKG_VER="$(sed -n 's/^version *= *"\(.*\)"/\1/p' Cargo.toml | head -n1)"
           echo $PKG_VER
 
           git checkout -b "release/${PKG_VER}"
-          cargo release commit --execute --no-confirm
+          nix develop -c cargo release commit --execute --no-confirm
 
           git push -u origin HEAD
 

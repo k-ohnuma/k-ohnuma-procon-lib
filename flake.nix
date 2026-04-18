@@ -40,10 +40,10 @@
           default = pkgs.mkShellNoCC {
             packages = [
               rustToolchain
+              pkgs.cargo-nextest
             ];
           };
         }
       );
     };
 }
-

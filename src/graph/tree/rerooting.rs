@@ -170,7 +170,6 @@ where
             let mut pref = self.identity.to_owned();
 
             for (i, &nx) in self.to[v].iter().enumerate().take(deg) {
-
                 let merged = (self.merge)(pref.to_owned(), suffix[i].to_owned());
 
                 let at_v = (self.op_node)(merged, v);

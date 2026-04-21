@@ -72,11 +72,17 @@ mod tests {
         let mut pts = vec![(1, 0, 0), (0, 1, 1), (-1, 0, 2), (0, -1, 3)];
 
         pts.sort_by(|&a, &b| argcmp(a, b, false));
-        assert_eq!(pts.into_iter().map(|p| p.2).collect::<Vec<_>>(), vec![0, 1, 2, 3]);
+        assert_eq!(
+            pts.into_iter().map(|p| p.2).collect::<Vec<_>>(),
+            vec![0, 1, 2, 3]
+        );
 
         let mut pts = vec![(1, 0, 0), (0, 1, 1), (-1, 0, 2), (0, -1, 3)];
         pts.sort_by(|&a, &b| argcmp(a, b, true));
-        assert_eq!(pts.into_iter().map(|p| p.2).collect::<Vec<_>>(), vec![0, 3, 2, 1]);
+        assert_eq!(
+            pts.into_iter().map(|p| p.2).collect::<Vec<_>>(),
+            vec![0, 3, 2, 1]
+        );
     }
 
     #[test]

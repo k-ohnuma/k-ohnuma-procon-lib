@@ -1,1 +1,2 @@
-pub mod edit_distanse;
+pub mod edit_distance;
+pub mod string_hash;

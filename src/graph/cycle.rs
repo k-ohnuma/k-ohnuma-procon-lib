@@ -133,3 +133,167 @@ impl Graph {
         Cycle { vertices, edge_ids }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{Cycle, Graph};
+    use rand::{rngs::StdRng, Rng, SeedableRng};
+    use std::collections::VecDeque;
+
+    fn is_valid_cycle_directed(g: &Graph, c: &Cycle) -> bool {
+        let k = c.vertices.len();
+        if k == 0 || c.edge_ids.len() != k {
+            return false;
+        }
+        for i in 0..k {
+            let eid = c.edge_ids[i];
+            if eid >= g.edges.len() {
+                return false;
+            }
+            let e = g.edges[eid];
+            let u = c.vertices[i];
+            let v = c.vertices[(i + 1) % k];
+            if e.u != u || e.v != v {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn is_valid_cycle_undirected(g: &Graph, c: &Cycle) -> bool {
+        let k = c.vertices.len();
+        if k == 0 || c.edge_ids.len() != k {
+            return false;
+        }
+        for i in 0..k {
+            let eid = c.edge_ids[i];
+            if eid >= g.edges.len() {
+                return false;
+            }
+            let e = g.edges[eid];
+            let u = c.vertices[i];
+            let v = c.vertices[(i + 1) % k];
+            if !((e.u == u && e.v == v) || (e.u == v && e.v == u)) {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn has_cycle_directed_naive(n: usize, edges: &[(usize, usize)]) -> bool {
+        let mut adj = vec![Vec::new(); n];
+        for &(u, v) in edges {
+            adj[u].push(v);
+        }
+        for &(u, v) in edges {
+            if u == v {
+                return true;
+            }
+            let mut seen = vec![false; n];
+            let mut q = VecDeque::new();
+            seen[v] = true;
+            q.push_back(v);
+            while let Some(x) = q.pop_front() {
+                for &nx in &adj[x] {
+                    if !seen[nx] {
+                        seen[nx] = true;
+                        q.push_back(nx);
+                    }
+                }
+            }
+            if seen[u] {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn has_cycle_undirected_naive(n: usize, edges: &[(usize, usize)]) -> bool {
+        let mut uf: Vec<usize> = (0..n).collect();
+
+        fn find(uf: &mut [usize], x: usize) -> usize {
+            if uf[x] == x {
+                x
+            } else {
+                let r = find(uf, uf[x]);
+                uf[x] = r;
+                r
+            }
+        }
+
+        fn unite(uf: &mut [usize], a: usize, b: usize) {
+            let ra = find(uf, a);
+            let rb = find(uf, b);
+            if ra != rb {
+                uf[rb] = ra;
+            }
+        }
+
+        for &(u, v) in edges {
+            if u == v {
+                return true;
+            }
+            let ru = find(&mut uf, u);
+            let rv = find(&mut uf, v);
+            if ru == rv {
+                return true;
+            }
+            unite(&mut uf, u, v);
+        }
+        false
+    }
+
+    #[test]
+    fn random_directed_compare_naive_and_validate_cycle() {
+        let mut rng = StdRng::seed_from_u64(20260421);
+
+        for _ in 0..2000 {
+            let n = rng.random_range(1..=20usize);
+            let m = rng.random_range(0..=80usize);
+
+            let mut g = Graph::new(n, true);
+            let mut edges = Vec::with_capacity(m);
+            for _ in 0..m {
+                let u = rng.random_range(0..n);
+                let v = rng.random_range(0..n);
+                g.add_edge(u, v);
+                edges.push((u, v));
+            }
+
+            let got = g.find_cycle();
+            let exp = has_cycle_directed_naive(n, &edges);
+
+            assert_eq!(got.is_some(), exp);
+            if let Some(c) = got {
+                assert!(is_valid_cycle_directed(&g, &c));
+            }
+        }
+    }
+
+    #[test]
+    fn random_undirected_compare_naive_and_validate_cycle() {
+        let mut rng = StdRng::seed_from_u64(7);
+
+        for _ in 0..2000 {
+            let n = rng.random_range(1..=20usize);
+            let m = rng.random_range(0..=80usize);
+
+            let mut g = Graph::new(n, false);
+            let mut edges = Vec::with_capacity(m);
+            for _ in 0..m {
+                let u = rng.random_range(0..n);
+                let v = rng.random_range(0..n);
+                g.add_edge(u, v);
+                edges.push((u, v));
+            }
+
+            let got = g.find_cycle();
+            let exp = has_cycle_undirected_naive(n, &edges);
+
+            assert_eq!(got.is_some(), exp);
+            if let Some(c) = got {
+                assert!(is_valid_cycle_undirected(&g, &c));
+            }
+        }
+    }
+}

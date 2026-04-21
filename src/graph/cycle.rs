@@ -1,4 +1,3 @@
-
 pub struct Graph {
     pub n: usize,
     // (to, edge_id)

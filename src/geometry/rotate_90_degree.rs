@@ -11,4 +11,3 @@ pub fn rotate_90_degrees<T: Clone>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {
 
     rotated
 }
-

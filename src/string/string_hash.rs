@@ -1,6 +1,5 @@
 use std::ops::{Bound, RangeBounds};
 
-
 #[derive(Clone, Debug)]
 pub struct StringHash {
     len: usize,

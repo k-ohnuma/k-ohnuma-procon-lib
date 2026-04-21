@@ -1,7 +1,10 @@
 pub mod algorithm;
 pub mod data_structure;
+pub mod geometry;
 pub mod graph;
+pub mod io;
+pub mod iter;
 pub mod math;
+pub mod slice;
 pub mod string;
-pub mod tree;
-pub mod utils;
+pub mod traits;

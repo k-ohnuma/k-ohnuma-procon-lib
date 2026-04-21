@@ -1,4 +1,3 @@
-
 pub struct EulerTour {
     to: Vec<Vec<usize>>,
     parent: Vec<usize>,
@@ -33,4 +32,3 @@ impl EulerTour {
         self.out_v[v] = self.order.len();
     }
 }
-

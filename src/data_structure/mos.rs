@@ -1,4 +1,3 @@
-
 #[derive(Clone, Copy, Debug)]
 struct Query {
     l: usize,

@@ -148,7 +148,7 @@ pub fn is_edit_distance_leq_k<T: Eq>(s: &[T], t: &[T], k: usize) -> bool {
 #[cfg(test)]
 
 mod tests {
-    use crate::string::edit_distanse::edit_distance;
+    use crate::string::edit_distance::*;
 
 
     fn to_chars(s: &str) -> Vec<char> {

@@ -244,8 +244,7 @@ mod tests {
     fn build_children(parent: &[usize]) -> Vec<Vec<usize>> {
         let n = parent.len();
         let mut ch = vec![vec![]; n];
-        for v in 0..n {
-            let p = parent[v];
+        for (v, &p) in parent.iter().enumerate().take(n) {
             if p != usize::MAX {
                 ch[p].push(v);
             }
@@ -438,8 +437,8 @@ mod tests {
                     let node = hld.inv[idx];
                     assert!(subtree[node], "interval contains non-subtree node");
                 }
-                for node in 0..n {
-                    if subtree[node] {
+                for (node, &in_subtree) in subtree.iter().enumerate().take(n) {
+                    if in_subtree {
                         let id = hld.vid[node];
                         assert!(tin <= id && id < tout, "subtree node out of interval");
                     }

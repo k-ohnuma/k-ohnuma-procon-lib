@@ -85,7 +85,7 @@ where
                     break;
                 }
 
-                let mut start = ((low_u + p - 1) / p) * p;
+                let mut start = low_u.div_ceil(p) * p;
                 if start == p {
                     start += p;
                 }

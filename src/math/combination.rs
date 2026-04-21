@@ -53,7 +53,7 @@ impl<Mint: ModIntBase> Comb<Mint> {
         if n < k {
             return Mint::new(0);
         }
-        return self.fact[n] * self.ifact[k] * self.ifact[n - k];
+        self.fact[n] * self.ifact[k] * self.ifact[n - k]
     }
 }
 

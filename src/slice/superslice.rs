@@ -229,7 +229,7 @@ impl<T> Ext for [T] {
 
     fn apply_permutation(&mut self, perm: &mut [isize]) {
         assert_eq!(self.len(), perm.len());
-        assert!(self.len() < isize::max_value() as usize);
+        assert!(self.len() < isize::MAX as usize);
         for i in 0..self.len() as isize {
             let mut c = perm[i as usize];
             if c < 0 {
@@ -250,7 +250,7 @@ impl<T> Ext for [T] {
 
     fn apply_inverse_permutation(&mut self, perm: &mut [isize]) {
         assert_eq!(self.len(), perm.len());
-        assert!(self.len() < isize::max_value() as usize);
+        assert!(self.len() < isize::MAX as usize);
         for i in 0..self.len() as isize {
             let mut c = perm[i as usize];
             if c < 0 {
@@ -276,7 +276,7 @@ pub trait Ext2 {
 
 impl Ext2 for [isize] {
     fn invert_permutation(&mut self) {
-        assert!(self.len() < isize::max_value() as usize);
+        assert!(self.len() < isize::MAX as usize);
         for i in 0..self.len() as isize {
             let mut c = self[i as usize];
             if c < 0 {

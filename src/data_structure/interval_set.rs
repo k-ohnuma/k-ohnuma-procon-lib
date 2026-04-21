@@ -213,12 +213,10 @@ where
             val: V::default(),
         };
         if let Some(prev) = self.set.range(..left_key).next_back().cloned() {
-            if prev.r == l && prev.val == val {
-                if self.set.remove(&prev) {
-                    // del
-                    f(false, prev.l, prev.r, &prev.val);
-                    l = prev.l;
-                }
+            if prev.r == l && prev.val == val && self.set.remove(&prev) {
+                // del
+                f(false, prev.l, prev.r, &prev.val);
+                l = prev.l;
             }
         }
 
@@ -228,12 +226,10 @@ where
             val: V::default(),
         };
         if let Some(next) = self.set.range(right_key..).next().cloned() {
-            if next.l == r && next.val == val {
-                if self.set.remove(&next) {
-                    // del
-                    f(false, next.l, next.r, &next.val);
-                    r = next.r;
-                }
+            if next.l == r && next.val == val && self.set.remove(&next) {
+                // del
+                f(false, next.l, next.r, &next.val);
+                r = next.r;
             }
         }
 

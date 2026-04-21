@@ -108,8 +108,8 @@ impl Graph {
         from: usize,
         to: usize,
         back_eid: usize,
-        parent_v: &Vec<Option<usize>>,
-        parent_e: &Vec<Option<usize>>,
+        parent_v: &[Option<usize>],
+        parent_e: &[Option<usize>],
     ) -> Cycle {
         let mut chain_vertices: Vec<usize> = vec![from];
         let mut chain_edges: Vec<usize> = Vec::new();

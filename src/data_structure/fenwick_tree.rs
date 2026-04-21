@@ -214,10 +214,10 @@ mod tests {
             let mut fw = FenwickTree::<i64>::new(n, 0);
             let mut a = vec![0i64; n];
 
-            for i in 0..n {
+            for (i, ai) in a.iter_mut().enumerate().take(n) {
                 let v = rng.random_range(0i64..=20);
                 fw.add(i, v);
-                a[i] = v;
+                *ai = v;
             }
 
             let total: i64 = a.iter().sum();
@@ -234,8 +234,8 @@ mod tests {
                 } else {
                     let mut s = 0i64;
                     let mut ans = None;
-                    for i in 0..n {
-                        s += a[i];
+                    for (i, &ai) in a.iter().enumerate().take(n) {
+                        s += ai;
                         if s >= k {
                             ans = Some(i);
                             break;
@@ -248,8 +248,8 @@ mod tests {
                 let exp_ub = {
                     let mut s = 0i64;
                     let mut ans = None;
-                    for i in 0..n {
-                        s += a[i];
+                    for (i, &ai) in a.iter().enumerate().take(n) {
+                        s += ai;
                         if s > k {
                             ans = Some(i);
                             break;
@@ -294,8 +294,8 @@ mod tests {
                 } else {
                     let mut s = 0i64;
                     let mut ans = None;
-                    for i in 0..n {
-                        s += a[i];
+                    for (i, &ai) in a.iter().enumerate().take(n) {
+                        s += ai;
                         if s >= k {
                             ans = Some(i);
                             break;

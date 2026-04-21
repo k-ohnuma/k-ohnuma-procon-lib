@@ -27,8 +27,8 @@ where
         let x = xs.len();
         let y = xs.first().map(|v| v.len()).unwrap_or(0);
 
-        for i in 0..x {
-            assert!(xs[i].len() == y, "y dimension mismatch at x={i}");
+        for (i, row) in xs.iter().enumerate().take(x) {
+            assert!(row.len() == y, "y dimension mismatch at x={i}");
         }
 
         let diff = vec![vec![T::zero(); y + 1]; x + 1];
@@ -210,19 +210,19 @@ mod random_tests {
     use rand::{Rng, SeedableRng};
     use rand_xoshiro::Xoshiro256PlusPlus;
 
-    fn naive_apply_rect(a: &mut Vec<Vec<i64>>, x0: usize, x1: usize, y0: usize, y1: usize, v: i64) {
-        for i in x0..x1 {
-            for j in y0..y1 {
-                a[i][j] += v;
+    fn naive_apply_rect(a: &mut [Vec<i64>], x0: usize, x1: usize, y0: usize, y1: usize, v: i64) {
+        for row in a.iter_mut().take(x1).skip(x0) {
+            for x in row.iter_mut().take(y1).skip(y0) {
+                *x += v;
             }
         }
     }
 
     fn naive_range_sum(a: &[Vec<i64>], x0: usize, x1: usize, y0: usize, y1: usize) -> i64 {
         let mut s = 0;
-        for i in x0..x1 {
-            for j in y0..y1 {
-                s += a[i][j];
+        for row in a.iter().take(x1).skip(x0) {
+            for &x in row.iter().take(y1).skip(y0) {
+                s += x;
             }
         }
         s

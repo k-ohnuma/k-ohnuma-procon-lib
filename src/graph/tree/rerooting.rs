@@ -100,12 +100,12 @@ where
         self.progate_down(root);
 
         let mut res = vec![self.identity.clone(); self.n];
-        for v in 0..self.n {
+        for (v, rv) in res.iter_mut().enumerate().take(self.n) {
             let mut accum = self.identity.clone();
             for x in self.dp[v].iter().cloned() {
                 accum = (self.merge)(accum, x);
             }
-            res[v] = (self.op_node)(accum, v);
+            *rv = (self.op_node)(accum, v);
         }
         res
     }
@@ -169,8 +169,7 @@ where
 
             let mut pref = self.identity.to_owned();
 
-            for i in 0..deg {
-                let nx = self.to[v][i];
+            for (i, &nx) in self.to[v].iter().enumerate().take(deg) {
 
                 let merged = (self.merge)(pref.to_owned(), suffix[i].to_owned());
 
@@ -300,16 +299,6 @@ mod tests {
 
             let edges_w: Vec<(usize, usize, i64)> =
                 base.iter().cloned().map(|(u, v)| (u, v, 1)).collect();
-            let expected = brute_sum_dist(n, &edges_w);
-
-            let identity = (0i64, 0i64);
-            let mut rr = Rerooting::new_unweighted(
-                n,
-                base.into_iter(),
-                identity,
-                |a, b| (a.0 + b.0, a.1 + b.1),
-                |acc, _v| (acc.0 + 1, acc.1),
-            );
 
             let mut rr2 = Rerooting::new_unweighted(
                 n,

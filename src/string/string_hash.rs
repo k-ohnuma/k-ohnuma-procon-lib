@@ -72,6 +72,10 @@ impl StringHash {
         self.len
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+
     pub fn hash_range(&self, range: impl RangeBounds<usize>) -> (u128, u128) {
         let (l, r) = self.normalize_range(range);
 

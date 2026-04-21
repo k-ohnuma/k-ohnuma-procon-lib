@@ -5,9 +5,7 @@ where
     Self::Item: Clone,
 {
     fn product_repeat(self, repeat: usize) -> MultiProduct<Self> {
-        std::iter::repeat(self)
-            .take(repeat)
-            .multi_cartesian_product()
+        std::iter::repeat_n(self, repeat).multi_cartesian_product()
     }
 }
 

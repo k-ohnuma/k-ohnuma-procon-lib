@@ -1,11 +1,11 @@
-/// Complexity:
-/// - edit_distance: O(nm) time, O(m) memory
-/// - is_edit_distance_leq_one: O(n + m)
-/// - is_edit_distance_leq_k: O(k * min(n, m)) ~ O(k * max(n, m)) time, O(m) memory
-///
-/// Notes:
-/// - For k == 1, prefer `is_edit_distance_leq_one`, which is simpler and faster.
-/// - `is_edit_distance_leq_k` uses banded DP.
+// Complexity:
+// - edit_distance: O(nm) time, O(m) memory
+// - is_edit_distance_leq_one: O(n + m)
+// - is_edit_distance_leq_k: O(k * min(n, m)) ~ O(k * max(n, m)) time, O(m) memory
+//
+// Notes:
+// - For k == 1, prefer `is_edit_distance_leq_one`, which is simpler and faster.
+// - `is_edit_distance_leq_k` uses banded DP.
 
 /// Full edit distance.
 /// O(nm) time, O(m) memory.
@@ -111,8 +111,8 @@ pub fn is_edit_distance_leq_k<T: Eq>(s: &[T], t: &[T], k: usize) -> bool {
     let mut prev = vec![inf; m + 1];
     let mut curr = vec![inf; m + 1];
 
-    for j in 0..=m.min(k) {
-        prev[j] = j;
+    for (j, v) in prev.iter_mut().enumerate().take(m.min(k) + 1) {
+        *v = j;
     }
 
     for i in 1..=n {
@@ -146,7 +146,6 @@ pub fn is_edit_distance_leq_k<T: Eq>(s: &[T], t: &[T], k: usize) -> bool {
 }
 
 #[cfg(test)]
-
 mod tests {
     use crate::string::edit_distance::*;
 

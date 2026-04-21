@@ -3,6 +3,12 @@ pub struct DoubleEndedPriorityQueue<T> {
     map: BTreeMap<T, usize>,
 }
 
+impl<T: num_integer::Integer + Copy> Default for DoubleEndedPriorityQueue<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: num_integer::Integer + Copy> DoubleEndedPriorityQueue<T> {
     pub fn new() -> Self {
         Self {
@@ -71,13 +77,13 @@ mod tests {
             false
         }
     }
-    fn ref_first(v: &Vec<i64>) -> Option<i64> {
+    fn ref_first(v: &[i64]) -> Option<i64> {
         v.iter().copied().min()
     }
-    fn ref_last(v: &Vec<i64>) -> Option<i64> {
+    fn ref_last(v: &[i64]) -> Option<i64> {
         v.iter().copied().max()
     }
-    fn ref_count(v: &Vec<i64>, x: i64) -> usize {
+    fn ref_count(v: &[i64], x: i64) -> usize {
         v.iter().filter(|&&y| y == x).count()
     }
     fn ref_pop_first(v: &mut Vec<i64>) -> Option<i64> {
@@ -133,7 +139,7 @@ mod tests {
             let mut r: Vec<i64> = vec![];
 
             for _ in 0..5000 {
-                let op = (rng.next_u32() % 8) as u32;
+                let op = rng.next_u32() % 8;
                 let x = rand_i64(&mut rng);
 
                 match op {

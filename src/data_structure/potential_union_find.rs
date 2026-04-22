@@ -66,7 +66,7 @@ impl PotentialUnionFind {
 
     pub fn size(&mut self, n: usize) -> usize {
         let leader = self.leader(n);
-        return self.size[leader];
+        self.size[leader]
     }
 }
 
@@ -76,7 +76,7 @@ mod tests {
     use rand::Rng;
     use std::collections::VecDeque;
 
-    fn brute_diff(n: usize, g: &Vec<Vec<(usize, isize)>>, a: usize, b: usize) -> Option<isize> {
+    fn brute_diff(n: usize, g: &[Vec<(usize, isize)>], a: usize, b: usize) -> Option<isize> {
         let mut pot: Vec<Option<isize>> = vec![None; n];
         let mut q = VecDeque::new();
         pot[a] = Some(0);
@@ -97,7 +97,7 @@ mod tests {
         }
     }
 
-    fn brute_comp_size(n: usize, g: &Vec<Vec<(usize, isize)>>, s: usize) -> usize {
+    fn brute_comp_size(n: usize, g: &[Vec<(usize, isize)>], s: usize) -> usize {
         let mut seen = vec![false; n];
         let mut q = VecDeque::new();
         seen[s] = true;

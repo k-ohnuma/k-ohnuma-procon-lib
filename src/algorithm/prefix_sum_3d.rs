@@ -1,8 +1,5 @@
 use num_traits::Zero;
-use std::{
-    ops::{Add, AddAssign, Bound, Range, RangeBounds, Sub, SubAssign},
-    usize,
-};
+use std::ops::{Add, AddAssign, Bound, Range, RangeBounds, Sub, SubAssign};
 
 #[derive(Clone, Debug)]
 pub struct PrefixSum3D<T> {
@@ -37,10 +34,10 @@ where
             .map(|v| v.len())
             .unwrap_or(0);
 
-        for i in 0..x {
-            assert!(xs[i].len() == y, "y dimension mismatch at x={i}");
-            for j in 0..y {
-                assert!(xs[i][j].len() == z, "z dimension mismatch at x={i}, y={j}");
+        for (i, x_plane) in xs.iter().enumerate().take(x) {
+            assert!(x_plane.len() == y, "y dimension mismatch at x={i}");
+            for (j, y_row) in x_plane.iter().enumerate().take(y) {
+                assert!(y_row.len() == z, "z dimension mismatch at x={i}, y={j}");
             }
         }
 
@@ -73,6 +70,7 @@ where
 
     /// 直方体 [x0,x1)×[y0,y1)×[z0,z1) に +v
     /// build() 前だけ呼ぶ想定（build後に呼ぶと acc が古くなるので None に戻す）
+    #[allow(clippy::too_many_arguments)]
     pub fn add_box(
         &mut self,
         x0: usize,
@@ -251,9 +249,9 @@ mod tests {
         assert_eq!(ps.total_sum(), (x * y * z) as i64);
         assert_eq!(ps.range_sum(0..x, 0..y, 0..z), (x * y * z) as i64);
 
-        assert_eq!(ps.range_sum(0..x, 0..y, 0..1), (x * y * 1) as i64);
-        assert_eq!(ps.range_sum(0..1, 0..y, 0..z), (1 * y * z) as i64);
-        assert_eq!(ps.range_sum(0..x, 0..1, 0..z), (x * 1 * z) as i64);
+        assert_eq!(ps.range_sum(0..x, 0..y, 0..1), (x * y) as i64);
+        assert_eq!(ps.range_sum(0..1, 0..y, 0..z), (y * z) as i64);
+        assert_eq!(ps.range_sum(0..x, 0..1, 0..z), (x * z) as i64);
     }
 
     #[test]
@@ -267,7 +265,7 @@ mod tests {
 
         // 交差領域: x=1..3(2) * y=1..2(1) * z=1..2(1) = 2
         // そこは 2 + (-1) = 1
-        assert_eq!(ps.range_sum(1..3, 1..2, 1..2), 2 /*cells*/ as i64 * 1);
+        assert_eq!(ps.range_sum(1..3, 1..2, 1..2), 2_i64 /*cells*/);
 
         assert_eq!(ps.range_sum(0..1, 0..2, 0..2), 4 * 2);
 
@@ -306,10 +304,10 @@ mod tests {
         ];
 
         for &(x0, x1, y0, y1, z0, z1, v) in boxes {
-            for i in x0..x1 {
-                for j in y0..y1 {
-                    for k in z0..z1 {
-                        a[i][j][k] += v;
+            for yz in a.iter_mut().take(x1).skip(x0) {
+                for z_row in yz.iter_mut().take(y1).skip(y0) {
+                    for cell in z_row.iter_mut().take(z1).skip(z0) {
+                        *cell += v;
                     }
                 }
             }
@@ -327,10 +325,10 @@ mod tests {
         z1: usize,
     ) -> i64 {
         let mut s = 0i64;
-        for i in x0..x1 {
-            for j in y0..y1 {
-                for k in z0..z1 {
-                    s += a[i][j][k];
+        for yz in a.iter().take(x1).skip(x0) {
+            for z_row in yz.iter().take(y1).skip(y0) {
+                for &cell in z_row.iter().take(z1).skip(z0) {
+                    s += cell;
                 }
             }
         }

@@ -100,6 +100,27 @@ where
         }
         self.a.is_negative()
     }
+
+    fn cmp_internal(&self, other: &Self) -> Ordering {
+        if self.b.is_zero() && other.b.is_zero() {
+            return self.a.cmp(&other.a);
+        }
+        if self.b.is_zero() {
+            return if self.a.is_positive() {
+                Ordering::Greater
+            } else {
+                Ordering::Less
+            };
+        }
+        if other.b.is_zero() {
+            return if other.a.is_positive() {
+                Ordering::Less
+            } else {
+                Ordering::Greater
+            };
+        }
+        (self.a * other.b).cmp(&(other.a * self.b))
+    }
 }
 
 impl<T> From<T> for Frac<T>
@@ -196,7 +217,7 @@ where
 {
     type Output = Self;
     fn div(self, rhs: Self) -> Self::Output {
-        self * rhs.inv()
+        <Self as Mul>::mul(self, rhs.inv())
     }
 }
 
@@ -215,24 +236,7 @@ where
     T: Integer + Signed + Copy,
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        if self.b.is_zero() && other.b.is_zero() {
-            return Some(self.a.cmp(&other.a));
-        }
-        if self.b.is_zero() {
-            return Some(if self.a.is_positive() {
-                Ordering::Greater
-            } else {
-                Ordering::Less
-            });
-        }
-        if other.b.is_zero() {
-            return Some(if other.a.is_positive() {
-                Ordering::Less
-            } else {
-                Ordering::Greater
-            });
-        }
-        Some((self.a * other.b).cmp(&(other.a * self.b)))
+        Some(self.cmp(other))
     }
 }
 
@@ -241,7 +245,7 @@ where
     T: Integer + Signed + Copy,
 {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap()
+        self.cmp_internal(other)
     }
 }
 
@@ -286,8 +290,7 @@ where
     type Output = Self;
     fn div(self, rhs: T) -> Self::Output {
         let rhs = Self::from_int(rhs);
-        let inv = rhs.inv();
-        self * inv
+        <Self as Mul>::mul(self, rhs.inv())
     }
 }
 
@@ -360,8 +363,7 @@ where
     T: Integer + Signed + Copy,
 {
     fn div_assign(&mut self, rhs: Self) {
-        let inv = rhs.inv();
-        *self *= inv
+        *self = <Self as Div>::div(*self, rhs);
     }
 }
 impl<T> AddAssign<T> for Frac<T>
@@ -396,8 +398,7 @@ where
     T: Integer + Signed + Copy,
 {
     fn div_assign(&mut self, rhs: T) {
-        let rhs = Self::from_int(rhs);
-        *self /= rhs
+        *self = <Self as Div<T>>::div(*self, rhs)
     }
 }
 

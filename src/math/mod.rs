@@ -1,7 +1,9 @@
 pub mod combination;
-pub mod erathosthenes;
+pub mod eratosthenes;
 pub mod extgcd;
 pub mod factorization;
 pub mod fraction;
-pub mod is_prime_miller;
+pub mod matrix;
+pub mod miller_rabin;
+pub mod segmented_sieve;
 pub mod sqrt;

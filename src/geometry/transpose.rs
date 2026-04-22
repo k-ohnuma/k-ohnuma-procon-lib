@@ -8,9 +8,9 @@ pub fn transpose<T: Clone + Copy + Default>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> 
 
     let mut transposed = vec![vec![T::default(); rows]; cols];
 
-    for i in 0..rows {
-        for j in 0..cols {
-            transposed[j][i] = matrix[i][j];
+    for (i, row) in matrix.iter().enumerate().take(rows) {
+        for (j, out_row) in transposed.iter_mut().enumerate().take(cols) {
+            out_row[i] = row[j];
         }
     }
 
@@ -78,9 +78,9 @@ mod tests {
             };
 
             let mut m = vec![vec![0i64; cols]; rows];
-            for i in 0..rows {
-                for j in 0..cols {
-                    m[i][j] = rng.random_range(-1_000_000..=1_000_000);
+            for row in m.iter_mut().take(rows) {
+                for x in row.iter_mut().take(cols) {
+                    *x = rng.random_range(-1_000_000..=1_000_000);
                 }
             }
             assert!(is_rect(&m));
@@ -99,9 +99,9 @@ mod tests {
             let cols = rng.random_range(0..=25);
 
             let mut m = vec![vec![0u32; cols]; rows];
-            for i in 0..rows {
-                for j in 0..cols {
-                    m[i][j] = rng.random();
+            for row in m.iter_mut().take(rows) {
+                for x in row.iter_mut().take(cols) {
+                    *x = rng.random();
                 }
             }
             assert!(is_rect(&m));
@@ -113,9 +113,9 @@ mod tests {
                 assert!(t.iter().all(|row| row.len() == rows));
             }
 
-            for i in 0..rows {
-                for j in 0..cols {
-                    assert_eq!(t[j][i], m[i][j]);
+            for (i, row) in m.iter().enumerate().take(rows) {
+                for (j, t_row) in t.iter().enumerate().take(cols) {
+                    assert_eq!(t_row[i], row[j]);
                 }
             }
         }

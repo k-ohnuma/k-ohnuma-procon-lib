@@ -41,11 +41,21 @@ impl Matrix2 {
     }
 
     pub fn mul(self, rhs: Self, modu: i64) -> Self {
+        assert!(modu > 0);
+        let m = modu as i128;
+        let a00 = ((self.a00 as i128) * (rhs.a00 as i128) + (self.a01 as i128) * (rhs.a10 as i128))
+            .rem_euclid(m) as i64;
+        let a01 = ((self.a00 as i128) * (rhs.a01 as i128) + (self.a01 as i128) * (rhs.a11 as i128))
+            .rem_euclid(m) as i64;
+        let a10 = ((self.a10 as i128) * (rhs.a00 as i128) + (self.a11 as i128) * (rhs.a10 as i128))
+            .rem_euclid(m) as i64;
+        let a11 = ((self.a10 as i128) * (rhs.a01 as i128) + (self.a11 as i128) * (rhs.a11 as i128))
+            .rem_euclid(m) as i64;
         Self {
-            a00: (self.a00 * rhs.a00 + self.a01 * rhs.a10).rem_euclid(modu),
-            a01: (self.a00 * rhs.a01 + self.a01 * rhs.a11).rem_euclid(modu),
-            a10: (self.a10 * rhs.a00 + self.a11 * rhs.a10).rem_euclid(modu),
-            a11: (self.a10 * rhs.a01 + self.a11 * rhs.a11).rem_euclid(modu),
+            a00,
+            a01,
+            a10,
+            a11,
         }
     }
 
@@ -63,9 +73,13 @@ impl Matrix2 {
 
     /// Applies the matrix to a column vector [x, y]^T.
     pub fn apply_vec2(self, x: i64, y: i64, modu: i64) -> (i64, i64) {
+        assert!(modu > 0);
+        let m = modu as i128;
         (
-            (self.a00 * x + self.a01 * y).rem_euclid(modu),
-            (self.a10 * x + self.a11 * y).rem_euclid(modu),
+            ((self.a00 as i128) * (x as i128) + (self.a01 as i128) * (y as i128)).rem_euclid(m)
+                as i64,
+            ((self.a10 as i128) * (x as i128) + (self.a11 as i128) * (y as i128)).rem_euclid(m)
+                as i64,
         )
     }
 }
@@ -168,5 +182,50 @@ mod tests {
             let (fn_, _) = p.apply_vec2(1, 0, modu);
             assert_eq!(fn_, want);
         }
+    }
+
+    #[test]
+    fn test_matrix_mul_large_mod_no_overflow() {
+        let modu = 9_000_000_000_000_000_007i64;
+        let a = Matrix2::new(modu - 2, modu - 3, modu - 5, modu - 7, modu);
+        let b = Matrix2::new(modu - 11, modu - 13, modu - 17, modu - 19, modu);
+
+        let got = a.mul(b, modu);
+
+        let m = modu as i128;
+        let exp_a00 = ((a.a00 as i128) * (b.a00 as i128) + (a.a01 as i128) * (b.a10 as i128))
+            .rem_euclid(m) as i64;
+        let exp_a01 = ((a.a00 as i128) * (b.a01 as i128) + (a.a01 as i128) * (b.a11 as i128))
+            .rem_euclid(m) as i64;
+        let exp_a10 = ((a.a10 as i128) * (b.a00 as i128) + (a.a11 as i128) * (b.a10 as i128))
+            .rem_euclid(m) as i64;
+        let exp_a11 = ((a.a10 as i128) * (b.a01 as i128) + (a.a11 as i128) * (b.a11 as i128))
+            .rem_euclid(m) as i64;
+
+        assert_eq!(
+            got,
+            Matrix2 {
+                a00: exp_a00,
+                a01: exp_a01,
+                a10: exp_a10,
+                a11: exp_a11
+            }
+        );
+    }
+
+    #[test]
+    fn test_apply_vec2_large_mod_no_overflow() {
+        let modu = 9_000_000_000_000_000_007i64;
+        let a = Matrix2::new(modu - 2, modu - 3, modu - 5, modu - 7, modu);
+        let x = modu - 11;
+        let y = modu - 13;
+
+        let got = a.apply_vec2(x, y, modu);
+        let m = modu as i128;
+        let exp = (
+            ((a.a00 as i128) * (x as i128) + (a.a01 as i128) * (y as i128)).rem_euclid(m) as i64,
+            ((a.a10 as i128) * (x as i128) + (a.a11 as i128) * (y as i128)).rem_euclid(m) as i64,
+        );
+        assert_eq!(got, exp);
     }
 }

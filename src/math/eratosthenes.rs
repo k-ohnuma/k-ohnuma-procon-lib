@@ -15,7 +15,15 @@ where
         let mut first = vec![T::from_i8(1).unwrap(); leng + 1];
         let mut primes = vec![];
         furui[0] = false;
-        furui[1] = false;
+        if leng >= 1 {
+            furui[1] = false;
+        }
+        if leng < 2 {
+            return Self {
+                sosus: primes,
+                first_soinsu: first,
+            };
+        }
 
         for i in 2..=leng {
             if !furui[i] {
@@ -46,6 +54,7 @@ where
     pub fn factorization(&self, num: T) -> Vec<T> {
         let mut ans = vec![];
         let mut now = num.to_usize().unwrap();
+        assert!(now >= 2, "num must be >= 2");
         if now >= self.first_soinsu.len() {
             panic!("高望みするな")
         }
@@ -167,5 +176,30 @@ mod tests {
             b.sort_unstable();
             assert_eq!(a, b, "mismatch: x={x}");
         }
+    }
+
+    #[test]
+    fn test_new_small_sizes() {
+        let e0 = Eratosthenes::<usize>::new(0);
+        assert!(e0.sosus.is_empty());
+        assert_eq!(e0.first_soinsu.len(), 1);
+
+        let e1 = Eratosthenes::<usize>::new(1);
+        assert!(e1.sosus.is_empty());
+        assert_eq!(e1.first_soinsu.len(), 2);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_factorization_zero_panics() {
+        let e = Eratosthenes::<usize>::new(10);
+        let _ = e.factorization(0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_factorization_one_panics() {
+        let e = Eratosthenes::<usize>::new(10);
+        let _ = e.factorization(1);
     }
 }

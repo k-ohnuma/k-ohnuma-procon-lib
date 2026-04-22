@@ -51,12 +51,7 @@ impl Matrix2 {
             .rem_euclid(m) as i64;
         let a11 = ((self.a10 as i128) * (rhs.a01 as i128) + (self.a11 as i128) * (rhs.a11 as i128))
             .rem_euclid(m) as i64;
-        Self {
-            a00,
-            a01,
-            a10,
-            a11,
-        }
+        Self { a00, a01, a10, a11 }
     }
 
     pub fn pow(mut self, mut exp: u64, modu: i64) -> Self {

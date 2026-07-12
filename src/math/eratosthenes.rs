@@ -656,7 +656,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn test_lcm_mod_basic() {
         let e = Eratosthenes::<usize>::new(1000);
